@@ -47,7 +47,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
   useEffect(() => {
     const loadTask = async (): Promise<TaskType> => {
       if (!id || id === '') return initialValues
-      const task = await getTask({ id })
+      const task = getTask({ id })
       if (!task) return initialValues
       return task
     }
@@ -217,10 +217,10 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
             Cancel
           </Button>
           <Button
-            onClick={async () => {
+            onClick={() => {
               try {
                 TaskTypeSchema.parse(task)
-                id ? await updateTask({ task, id }) : await addTask({ task })
+                id ? updateTask({ task, id }) : addTask({ task })
                 if (id) {
                   toast({
                     title: 'Task updated',

@@ -55,7 +55,6 @@ export function UserNav (): JSX.Element {
             </DM.DropdownMenuPortal>
           </DM.DropdownMenuSub>
         </DM.DropdownMenuGroup>
-        <DM.DropdownMenuSeparator />
       </DM.DropdownMenuContent>
     </DM.DropdownMenu>
   )

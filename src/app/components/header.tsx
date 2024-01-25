@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 export function Header (): JSX.Element {
   useEffect(() => {
-    const listItem = document.querySelectorAll('#landing-header li')
+    const listItem = document.querySelectorAll('header[landing-header] li')
     const menuBackDrop: HTMLElement = document.querySelector('#menu-backdrop')!
 
     listItem.forEach((item) => {
@@ -27,12 +27,15 @@ export function Header (): JSX.Element {
   }, [])
   return (
     <header
-      id='landing-header'
-      className='landing-header p-2 px-3 md:px-11 flex z-40 w-full h-auto items-center  sticky top-0 inset-x-0 backdrop-blur-lg  backdrop-saturate-150 bg-background/70 justify-between'
+      landing-header='true'
+      className='p-2 px-3 md:px-11 flex z-40 w-full h-auto items-center  sticky top-0 inset-x-0 backdrop-blur-lg  backdrop-saturate-150 bg-background/70 justify-between'
     >
       <Link
         to='/'
         className='flex flex-row md:flex-grow md:basis-0 transform transition-all duration-500 ease-in-out'
+        activeOptions={{
+          exact: true
+        }}
         activeProps={{
           className: 'font-bold'
         }}
