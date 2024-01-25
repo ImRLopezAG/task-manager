@@ -3,11 +3,12 @@ import {
   ArrowRightIcon,
   ArrowUpIcon,
   CheckCircledIcon,
-  CircleIcon,
+  InfoCircledIcon,
   CrossCircledIcon,
   QuestionMarkCircledIcon,
   StopwatchIcon,
-  ScissorsIcon
+  ArchiveIcon,
+  PersonIcon
 } from '@radix-ui/react-icons'
 
 type Color = 'success' | 'warning' | 'info' | 'danger'
@@ -36,6 +37,26 @@ export const labels: Label[] = [
     value: 'development',
     label: 'Development',
     color: 'warning'
+  },
+  {
+    value: 'lifting',
+    label: 'Lifting',
+    color: 'info'
+  },
+  {
+    value: 'personal',
+    label: 'Personal',
+    color: 'success'
+  },
+  {
+    value: 'internal',
+    label: 'Internal',
+    color: 'warning'
+  },
+  {
+    value: 'session',
+    label: 'Session',
+    color: 'info'
   }
 ]
 
@@ -46,9 +67,9 @@ export const statuses = [
     icon: QuestionMarkCircledIcon
   },
   {
-    value: 'todo',
-    label: 'Todo',
-    icon: CircleIcon
+    value: 'task',
+    label: 'task',
+    icon: InfoCircledIcon
   },
   {
     value: 'in progress',
@@ -68,7 +89,12 @@ export const statuses = [
   {
     value: 'archived',
     label: 'Archived',
-    icon: ScissorsIcon
+    icon: ArchiveIcon
+  },
+  {
+    value: 'personal',
+    label: 'Personal',
+    icon: PersonIcon
   }
 ]
 
