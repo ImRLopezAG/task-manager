@@ -1,6 +1,14 @@
 import { z } from 'zod'
 
-export const LabelSchema = z.enum(['bug', 'documentation', 'feature'])
+export const LabelSchema = z.enum([
+  'bug',
+  'documentation',
+  'feature',
+  'development',
+  'lifting',
+  'internal',
+  'personal'
+])
 export const PrioritySchema = z.enum(['high', 'low', 'medium'])
 
 export const StatusSchema = z.enum([
@@ -8,7 +16,9 @@ export const StatusSchema = z.enum([
   'canceled',
   'done',
   'in progress',
-  'todo'
+  'task',
+  'archived',
+  'personal'
 ])
 
 export const TaskTypeSchema = z.object({
@@ -22,4 +32,19 @@ export const TaskTypeSchema = z.object({
   case: z.string().optional(),
   company: z.string().optional(),
   priority: PrioritySchema
+})
+
+export const ModelTypesSchema = z.enum(['GPT-3', 'Codex'])
+
+export const ModelSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  type: ModelTypesSchema,
+  description: z.string(),
+  strengths: z.string().optional()
+})
+
+export const PresetSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string()
 })

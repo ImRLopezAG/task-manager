@@ -6,14 +6,16 @@ import { Input } from '@ui/input'
 import { DataTableViewOptions } from './data-table-view-options'
 
 import { TaskForm } from '@components/task-form'
-import { priorities, statuses } from '@utils/data'
+import { priorities, statuses } from '@utils/constants'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
 }
 
-export function DataTableToolbar<TData> ({ table }: DataTableToolbarProps<TData>): JSX.Element {
+export function DataTableToolbar<TData> ({
+  table
+}: DataTableToolbarProps<TData>): JSX.Element {
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (

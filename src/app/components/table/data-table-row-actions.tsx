@@ -40,9 +40,9 @@ export function DataTableRowActions<TData> ({
             <DM.DropdownMenuSubContent>
               <DM.DropdownMenuRadioGroup
                 value={task.label}
-                onValueChange={(value: Label) => {
+                onValueChange={(value: any) => {
                   const { label, ...rest } = task
-                  updateTask({ id: task.id, task: { label: value, ...rest } })
+                  updateTask({ id: task.id, task: { label: value as Label, ...rest } })
                 }}
               >
                 {LabelSchema.options.map((label) => (
@@ -58,12 +58,9 @@ export function DataTableRowActions<TData> ({
             <DM.DropdownMenuSubContent>
               <DM.DropdownMenuRadioGroup
                 value={task.priority}
-                onValueChange={(value: Priority) => {
+                onValueChange={(value: any) => {
                   const { priority, ...rest } = task
-                  updateTask({
-                    id: task.id,
-                    task: { priority: value, ...rest }
-                  })
+                  updateTask({ id: task.id, task: { priority: value as Priority, ...rest } })
                 }}
               >
                 {PrioritySchema.options.map((priority) => (
@@ -79,9 +76,9 @@ export function DataTableRowActions<TData> ({
             <DM.DropdownMenuSubContent>
               <DM.DropdownMenuRadioGroup
                 value={task.status}
-                onValueChange={(value: Status) => {
+                onValueChange={(value: any) => {
                   const { status, ...rest } = task
-                  updateTask({ id: task.id, task: { status: value, ...rest } })
+                  updateTask({ id: task.id, task: { status: value as Status, ...rest } })
                 }}
               >
                 {StatusSchema.options.map((status) => (

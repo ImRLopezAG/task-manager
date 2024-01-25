@@ -2,11 +2,15 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-const Table = React.forwardRef<
-HTMLTableElement,
-React.HTMLAttributes<HTMLTableElement>
+interface Iterable<T = any> {
+  each: T[]
+  children: (item: T, key: string) => JSX.Element
+  className?: string
+}
+
+const Table = React.forwardRef< HTMLTableElement, React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  <div className='relative w-full overflow-auto'>
     <table
       ref={ref}
       className={cn('w-full caption-bottom text-sm', className)}
@@ -16,17 +20,13 @@ React.HTMLAttributes<HTMLTableElement>
 ))
 Table.displayName = 'Table'
 
-const TableHeader = React.forwardRef<
-HTMLTableSectionElement,
-React.HTMLAttributes<HTMLTableSectionElement>
+const TableHeader = React.forwardRef< HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
   <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
 ))
 TableHeader.displayName = 'TableHeader'
 
-const TableBody = React.forwardRef<
-HTMLTableSectionElement,
-React.HTMLAttributes<HTMLTableSectionElement>
+const TableBody = React.forwardRef< HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
@@ -36,9 +36,7 @@ React.HTMLAttributes<HTMLTableSectionElement>
 ))
 TableBody.displayName = 'TableBody'
 
-const TableFooter = React.forwardRef<
-HTMLTableSectionElement,
-React.HTMLAttributes<HTMLTableSectionElement>
+const TableFooter = React.forwardRef< HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
@@ -51,9 +49,7 @@ React.HTMLAttributes<HTMLTableSectionElement>
 ))
 TableFooter.displayName = 'TableFooter'
 
-const TableRow = React.forwardRef<
-HTMLTableRowElement,
-React.HTMLAttributes<HTMLTableRowElement>
+const TableRow = React.forwardRef< HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
@@ -64,11 +60,10 @@ React.HTMLAttributes<HTMLTableRowElement>
     {...props}
   />
 ))
+
 TableRow.displayName = 'TableRow'
 
-const TableHead = React.forwardRef<
-HTMLTableCellElement,
-React.ThHTMLAttributes<HTMLTableCellElement>
+const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
@@ -81,9 +76,7 @@ React.ThHTMLAttributes<HTMLTableCellElement>
 ))
 TableHead.displayName = 'TableHead'
 
-const TableCell = React.forwardRef<
-HTMLTableCellElement,
-React.TdHTMLAttributes<HTMLTableCellElement>
+const TableCell = React.forwardRef< HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
@@ -96,9 +89,7 @@ React.TdHTMLAttributes<HTMLTableCellElement>
 ))
 TableCell.displayName = 'TableCell'
 
-const TableCaption = React.forwardRef<
-HTMLTableCaptionElement,
-React.HTMLAttributes<HTMLTableCaptionElement>
+const TableCaption = React.forwardRef< HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
@@ -108,13 +99,53 @@ React.HTMLAttributes<HTMLTableCaptionElement>
 ))
 TableCaption.displayName = 'TableCaption'
 
+const TableIterableRow = <T = any>({ each, children, className }: Iterable<T>): JSX.Element => (
+  <>
+    {each.map((item) => {
+      const key = crypto.randomUUID()
+      return (
+        <TableRow key={key} className={className}>
+          {children(item, key)}
+        </TableRow>
+      )
+    })}
+  </>
+)
+const TableIterableCell = <T = any>({ each, children, className }: Iterable<T>): JSX.Element => (
+  <>
+    {each.map((item) => {
+      const key = crypto.randomUUID()
+      return (
+        <TableCell key={key} className={className}>
+          {children(item, key)}
+        </TableCell>
+      )
+    })}
+  </>
+)
+
+const TableIterableHead = React.forwardRef<HTMLTableCellElement, Iterable<React.ThHTMLAttributes<HTMLTableCellElement>>>((
+  { each, children, className, ...props },
+  ref
+) => (
+  <>
+    {each.map((item) => {
+      const key = crypto.randomUUID()
+      return (
+        <TableHead key={key} className={className} ref={ref} {...props}>
+          {children(item, key)}
+        </TableHead>
+      )
+    })}
+  </>
+))
+TableIterableHead.displayName = 'TableIterableHead'
 export {
   Table,
-  TableHeader,
   TableBody,
+  TableCaption,
+  TableCell,
   TableFooter,
   TableHead,
-  TableRow,
-  TableCell,
-  TableCaption
+  TableHeader, TableIterableCell, TableIterableHead, TableIterableRow, TableRow
 }

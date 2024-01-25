@@ -1,11 +1,6 @@
-import { useTaskStore } from '@app/context'
+'use client'
 import { Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons'
-import {
-  LabelSchema,
-  PrioritySchema,
-  StatusSchema,
-  TaskTypeSchema
-} from '@type/schema'
+import { LabelSchema, PrioritySchema, StatusSchema, TaskTypeSchema } from '@type/schema'
 import { Button } from '@ui/button'
 import * as DL from '@ui/dialog'
 import { Input } from '@ui/input'
@@ -13,7 +8,9 @@ import { Label } from '@ui/label'
 import * as SL from '@ui/select'
 import { Textarea } from '@ui/textarea'
 import { useEffect, useState } from 'react'
-import type { z } from 'zod'
+import { ZodError, type z } from 'zod'
+import { useToast } from '@ui/use-toast'
+import { useTaskStore } from '@app/context'
 
 interface TaskFormProps {
   id?: string
@@ -29,7 +26,7 @@ const initialValues: TaskType = {
   id: '',
   title: '',
   label: 'documentation',
-  status: 'todo',
+  status: 'task',
   priority: 'low',
   description: '',
   case: '',
@@ -38,21 +35,27 @@ const initialValues: TaskType = {
 
 export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
   const { getTask, addTask, updateTask } = useTaskStore()
-  const loadTask = (): TaskType => {
-    if (!id || id === '') return initialValues
-    const storedTask = getTask({ id })
-    if (!storedTask) return initialValues
-    return storedTask
-  }
   const [task, setTask] = useState<TaskType>(initialValues)
   const [open, setOpen] = useState(false)
+  const { toast } = useToast()
+
   const [error, setError] = useState<ErrorType>({
     message: '',
     hasError: false
   })
 
   useEffect(() => {
-    setTask(loadTask)
+    const loadTask = async (): Promise<TaskType> => {
+      if (!id || id === '') return initialValues
+      const task = await getTask({ id })
+      if (!task) return initialValues
+      return task
+    }
+    loadTask().then((task) => {
+      setTask(task)
+    }).catch((error) => {
+      console.error(error)
+    })
     return () => {
       setTask(initialValues)
     }
@@ -66,7 +69,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
           <Button
             size='icon'
             variant='ghost'
-            className='flex size-fit text-start p-0 data-[state=open]:bg-muted'
+            className='flex size-fit p-0 text-start data-[state=open]:bg-muted'
           >
             <Pencil2Icon className='size-6 hover:text-primary' />
             <span className='sr-only'>Edit</span>
@@ -74,26 +77,23 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
             )
           : (
           <Button>
-            <PlusCircledIcon className='size-4 mr-2' />
+            <PlusCircledIcon className='mr-2 size-4' />
             Create task
           </Button>
             )}
       </DL.DialogTrigger>
-      <DL.DialogContent className='sm:max-w-[425px] grid gap-6'>
+      <DL.DialogContent className='grid gap-6 sm:max-w-[425px]'>
         <DL.DialogHeader>
-          <DL.DialogTitle>Create task</DL.DialogTitle>
-          <DL.DialogDescription>
-            Make changes to your task here. Click save when you're done.
-          </DL.DialogDescription>
+          <DL.DialogTitle>{id === undefined ? 'Create' : 'Update'} task</DL.DialogTitle>
         </DL.DialogHeader>
         <section className='flex flex-col gap-3'>
-          {error.hasError && (
-            <span className='text-red-500'>
-              There was an error with {error.field?.toString() ?? 'the form'}:
-              <br />
-              {error.message}
-            </span>
-          )}
+          <span className='text-red-500 text-md h-12'>
+            {error.hasError && (
+              <>
+                There was an error with the field {error.field?.toString()}: {error.message}
+              </>
+            )}
+          </span>
           <div className='grid grid-cols-2 gap-4'>
             <div className='grid gap-2'>
               <Label htmlFor='title'>Title</Label>
@@ -131,7 +131,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
             <div className='grid gap-2'>
               <Label htmlFor='label'>Label</Label>
               <SL.Select
-                defaultValue='todo'
+                defaultValue='task'
                 value={task?.label}
                 onValueChange={(value: Label) => {
                   setTask({ ...task, label: value })
@@ -152,7 +152,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
             <div className='grid gap-2'>
               <Label htmlFor='status'>Status</Label>
               <SL.Select
-                defaultValue='todo'
+                defaultValue='task'
                 value={task?.status}
                 onValueChange={(value: Status) => {
                   setTask({ ...task, status: value })
@@ -192,11 +192,11 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
               </SL.Select>
             </div>
           </div>
-          <div className='flex flex-col w-full gap-2'>
+          <div className='flex w-full flex-col gap-2'>
             <Label htmlFor='description'>Description</Label>
             <Textarea
               id='description'
-              value={task?.description}
+              value={task.description}
               placeholder='Please include all information relevant to your issue.'
               className='h-24'
               rows={4}
@@ -217,15 +217,39 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              id
-                ? updateTask({ id, task })
-                : TaskTypeSchema.parse(task)
-                  ? addTask({ task })
-                  : setError({
-                    message: 'Please fill in all required fields.',
-                    hasError: true
+            onClick={async () => {
+              try {
+                TaskTypeSchema.parse(task)
+                id ? await updateTask({ task, id }) : await addTask({ task })
+                if (id) {
+                  toast({
+                    title: 'Task updated',
+                    description: 'Your task has been updated.'
                   })
+                } else {
+                  toast({
+                    title: 'Task added',
+                    description: 'Your task has been added.'
+                  })
+                }
+              } catch (error) {
+                if (error instanceof ZodError) {
+                  const { issues } = error
+                  setError({
+                    field: issues[0].path[0].toString(),
+                    hasError: true,
+                    message: issues[0].message
+                  })
+                  setTimeout(() => {
+                    setError({
+                      field: '',
+                      hasError: false,
+                      message: ''
+                    })
+                  }, 1000)
+                  return
+                }
+              }
               setTask(initialValues)
               setOpen(false)
             }}
