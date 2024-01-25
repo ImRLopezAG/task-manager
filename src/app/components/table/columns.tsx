@@ -1,9 +1,16 @@
+'use client'
 import type { ColumnDef } from '@tanstack/react-table'
 
 import { Badge } from '@ui/badge'
 import { Checkbox } from '@ui/checkbox'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@ui/tooltip'
 
-import { labels, priorities, statuses } from '@utils/data'
+import { labels, priorities, statuses } from '@utils/constants'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -30,7 +37,7 @@ export const columns: Array<ColumnDef<TaskType>> = [
           row.toggleSelected(!!value)
         }}
         aria-label='Select row'
-        className='translate-y-[2px]'
+        className='items-center justify-center rounded-[5px]'
       />
     ),
     enableSorting: false,
@@ -43,11 +50,21 @@ export const columns: Array<ColumnDef<TaskType>> = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label)
-
       return (
-        <div className='flex space-x-2 w-full'>
+        <div className='flex w-full space-x-2'>
           {label && <Badge variant={label.color}>{label.label}</Badge>}
-          <span className='truncate font-medium'>{row.getValue('title')}</span>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className='truncate font-medium'>
+                  {row.getValue('title')}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent variant={label?.color ?? 'default'}>
+                <span className='font-medium'>{row.getValue('title')}</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       )
     }
@@ -57,14 +74,14 @@ export const columns: Array<ColumnDef<TaskType>> = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Company' />
     ),
-    cell: ({ row }) => <div>{row.getValue('company')}</div>
+    cell: ({ row }) => <span>{row.getValue('company')}</span>
   },
   {
     accessorKey: 'case',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Jira Cases' />
     ),
-    cell: ({ row }) => <div>{row.getValue('case')}</div>
+    cell: ({ row }) => <span>{row.getValue('case')}</span>
   },
   {
     accessorKey: 'description',
@@ -72,7 +89,22 @@ export const columns: Array<ColumnDef<TaskType>> = [
       <DataTableColumnHeader column={column} title='Description' />
     ),
     cell: ({ row }) => (
-      <div className='truncate w-64'>{row.getValue('description')}</div>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='truncate'>
+              <span className='font-medium'>{row.getValue('description')}</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent
+            variant='contrast'
+            align='start'
+            className='max-w-44 text-pretty'
+          >
+            <span className='font-medium'>{row.getValue('description')}</span>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     )
   },
   {
