@@ -21,28 +21,34 @@ export const StatusSchema = z.enum([
   'personal'
 ])
 
-export const TaskTypeSchema = z.object({
-  id: z.string().readonly(),
-  title: z.string(),
-  status: StatusSchema,
-  label: LabelSchema,
-  description: z.string(),
-  createdAt: z.string().optional(),
-  estimatedTime: z.number().optional(),
-  case: z.string().optional(),
-  company: z.string().optional(),
-  priority: PrioritySchema
-})
-
-export const ModelTypesSchema = z.enum(['GPT-3', 'Codex'])
-
-export const ModelSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  type: ModelTypesSchema,
-  description: z.string(),
-  strengths: z.string().optional()
-})
+export const TaskTypeSchema = z
+  .object({
+    id: z.string(),
+    title: z.string().min(3).max(50),
+    description: z.string(),
+    status: StatusSchema,
+    label: LabelSchema,
+    priority: PrioritySchema,
+    case: z.coerce
+      .string()
+      .trim()
+      .toUpperCase()
+      .transform((val) => {
+        if (val === '') return 'NONE'
+        else return val
+      }),
+    company: z.coerce
+      .string()
+      .trim()
+      .toUpperCase()
+      .transform((val) => {
+        if (val === '') return 'NONE'
+        else return val
+      }),
+    createdAt: z.coerce.date().transform((val) => val.toUTCString()).optional(),
+    updatedAt: z.coerce.date().transform((val) => val.toUTCString()).optional()
+  })
+  .strict()
 
 export const PresetSchema = z.object({
   id: z.string().uuid(),

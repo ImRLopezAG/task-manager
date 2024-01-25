@@ -7,7 +7,7 @@ import { createFileRoute } from '@tanstack/react-router'
 function Tasks (): JSX.Element {
   const { tasks } = useTaskStore()
   return (
-    <div className='flex h-fit flex-1 flex-col space-y-8 p-8'>
+    <div className='flex h-fit flex-1 flex-col '>
       <div className='flex items-center justify-between space-y-2'>
         <div>
           <h2 className='text-2xl font-bold tracking-tight'>Welcome back!</h2>

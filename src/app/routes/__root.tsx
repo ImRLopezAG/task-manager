@@ -13,7 +13,9 @@ function RootComponent (): JSX.Element {
     <main>
       <Header />
       <ThemeProvider>
-        <Outlet />
+        <main className='container'>
+          <Outlet />
+        </main>
       </ThemeProvider>
       <Toaster />
       <TanStackRouterDevtools position='bottom-right' />

@@ -23,17 +23,16 @@ export const useTaskStore = create(
       tasks: [],
       addTask ({ task }) {
         task.id = crypto.randomUUID()
-        task.createdAt = new Date().toISOString()
-        set(state => ({
+        task.createdAt = new Date().toUTCString()
+        set((state) => ({
           ...state,
-          tasks: [...state.tasks, task].filter(tsk => tsk.title.length >= 4)
+          tasks: [...state.tasks, task].filter((tsk) => tsk.title.length >= 4)
         }))
       },
       updateTask ({ id, task }) {
-        console.log(id, task)
-        set(state => ({
+        set((state) => ({
           ...state,
-          tasks: [...state.tasks].map(tsk => {
+          tasks: [...state.tasks].map((tsk) => {
             if (tsk.id === id) {
               tsk = task
             }
@@ -42,12 +41,12 @@ export const useTaskStore = create(
         }))
       },
       getTask ({ id }) {
-        return get().tasks.find(tsk => tsk.id === id)
+        return get().tasks.find((tsk) => tsk.id === id)
       },
       deleteTask ({ id }) {
-        set(state => ({
+        set((state) => ({
           ...state,
-          tasks: [...state.tasks].filter(tsk => tsk.id !== id)
+          tasks: [...state.tasks].filter((tsk) => tsk.id !== id)
         }))
       }
     }),
