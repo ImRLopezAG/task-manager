@@ -7,4 +7,5 @@ export declare global {
   export type Status = z.infer<typeof schema.StatusSchema>
   export type TaskType = z.infer<typeof schema.TaskTypeSchema>
   export type Preset = z.infer<typeof schema.PresetSchema>
+  export type Language = z.infer<typeof schema.LanguageSchema>
 }

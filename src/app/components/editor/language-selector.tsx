@@ -15,46 +15,46 @@ import {
 } from '@ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover'
 
-interface PresetSelectorProps extends PopoverProps {
-  presets: Preset[]
+interface LanguageSelectorProps extends PopoverProps {
+  languages: Language[]
+  handleLanguageChange: (language: Language) => void
+  selectedLanguage: Language
 }
 
-export function PresetSelector ({ presets, ...props }: PresetSelectorProps): JSX.Element {
+export function LanguageSelector ({ languages, selectedLanguage, handleLanguageChange, ...props }: LanguageSelectorProps): JSX.Element {
   const [open, setOpen] = useState(false)
-  const [selectedPreset, setSelectedPreset] = useState<Preset>()
-
   return (
     <Popover open={open} onOpenChange={setOpen} {...props}>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
           role='combobox'
-          aria-label='Load a preset...'
+          aria-label='Load a language...'
           aria-expanded={open}
           className='flex-1 justify-between md:max-w-[200px] lg:max-w-[300px]'
         >
-          {selectedPreset ? selectedPreset.name : 'Load a preset...'}
+          {selectedLanguage}
           <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-[300px] p-0'>
         <Command>
-          <CommandInput placeholder='Search presets...' />
-          <CommandEmpty>No presets found.</CommandEmpty>
+          <CommandInput placeholder='Search Languages...' />
+          <CommandEmpty>No Languages found.</CommandEmpty>
           <CommandGroup heading='Examples'>
-            {presets.map((preset) => (
+            {languages.map((language) => (
               <CommandItem
-                key={preset.id}
+                key={language}
                 onSelect={() => {
-                  setSelectedPreset(preset)
+                  handleLanguageChange(language)
                   setOpen(false)
                 }}
               >
-                {preset.name}
+                {language}
                 <CheckIcon
                   className={cn(
                     'ml-auto h-4 w-4',
-                    selectedPreset?.id === preset.id
+                    selectedLanguage === language
                       ? 'opacity-100'
                       : 'opacity-0'
                   )}
