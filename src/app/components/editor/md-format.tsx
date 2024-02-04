@@ -3,15 +3,12 @@ import React, { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-
-interface MessageProps {
-  text: string
-  selectedLanguage: Language
-}
+import { useEditorsStore } from '@context/editor'
 
 type RenderCodeBlockProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
 
-export const MarkdownFormat: React.FC<MessageProps> = ({ text, selectedLanguage }) => {
+export const MarkdownFormat: React.FC = () => {
+  const { editor } = useEditorsStore()
   const renderCodeBlock = ({
     className,
     children,
@@ -19,10 +16,9 @@ export const MarkdownFormat: React.FC<MessageProps> = ({ text, selectedLanguage 
   }: RenderCodeBlockProps): JSX.Element => {
     const language = useMemo(() => /language-(\w+)/.exec(className ?? 'plaintext'), [className])
     if (language !== null) {
-      const codeLanguage = selectedLanguage === 'demonstration' ? language[1] : selectedLanguage
       return (
         <SyntaxHighlighter
-          language={codeLanguage}
+          language={editor.language}
           style={{ ...vscDarkPlus }}
           customStyle={{
             borderRadius: '0.5rem',
@@ -32,7 +28,7 @@ export const MarkdownFormat: React.FC<MessageProps> = ({ text, selectedLanguage 
             paddingTop: '0.2rem',
             marginTop: 0
           }}
-          children={String(children).replace(/\n$/, '')}
+          children={String(children)}
           {...props}
         />
       )
@@ -53,14 +49,12 @@ export const MarkdownFormat: React.FC<MessageProps> = ({ text, selectedLanguage 
     }
   }
   return (
-    <div className='flex flex-col gap-2'>
       <ReactMarkdown
         components={{
           code: renderCodeBlock
         }}
       >
-        {text}
+        {`\`\`\`${editor.language}\n${editor.src.replace(/\n$/, '')}\n\`\`\``}
       </ReactMarkdown>
-    </div>
   )
 }

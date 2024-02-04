@@ -1,16 +1,16 @@
 'use client'
+import { useTaskStore } from '@context/task'
 import { Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons'
-import { LabelSchema, PrioritySchema, StatusSchema, TaskTypeSchema } from '@type/schema'
+import { LabelSchema, PrioritySchema, StatusSchema, TaskTypeSchema } from '@schemas/task.schema'
 import { Button } from '@ui/button'
 import * as DL from '@ui/dialog'
 import { Input } from '@ui/input'
 import { Label } from '@ui/label'
 import * as SL from '@ui/select'
 import { Textarea } from '@ui/textarea'
+import { useToast } from '@ui/use-toast'
 import { useEffect, useState } from 'react'
 import { ZodError, type z } from 'zod'
-import { useToast } from '@ui/use-toast'
-import { useTaskStore } from '@app/context'
 
 interface TaskFormProps {
   id?: string
@@ -51,11 +51,13 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
       if (!task) return initialValues
       return task
     }
-    loadTask().then((task) => {
-      setTask(task)
-    }).catch((error) => {
-      console.error(error)
-    })
+    loadTask()
+      .then((task) => {
+        setTask(task)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
     return () => {
       setTask(initialValues)
     }
@@ -84,13 +86,16 @@ export const TaskForm: React.FC<TaskFormProps> = ({ id }) => {
       </DL.DialogTrigger>
       <DL.DialogContent className='grid gap-6 sm:max-w-[425px]'>
         <DL.DialogHeader>
-          <DL.DialogTitle>{id === undefined ? 'Create' : 'Update'} task</DL.DialogTitle>
+          <DL.DialogTitle>
+            {id === undefined ? 'Create' : 'Update'} task
+          </DL.DialogTitle>
         </DL.DialogHeader>
         <section className='flex flex-col gap-3'>
           <span className='text-red-500 text-md h-12'>
             {error.hasError && (
               <>
-                There was an error with the field {error.field?.toString()}: {error.message}
+                There was an error with the field {error.field?.toString()}:{' '}
+                {error.message}
               </>
             )}
           </span>

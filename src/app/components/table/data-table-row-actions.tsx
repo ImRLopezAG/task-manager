@@ -6,10 +6,10 @@ import type { Row } from '@tanstack/react-table'
 import { Button } from '@ui/button'
 import * as DM from '@ui/dropdown-menu'
 
-import { TaskTypeSchema, LabelSchema, PrioritySchema, StatusSchema } from '@type/schema'
+import { TaskTypeSchema, LabelSchema, PrioritySchema, StatusSchema } from '@schemas/task.schema'
 
 import { TaskForm } from '@components/task-form'
-import { useTaskStore } from '@app/context'
+import { useTaskStore } from '@context/task'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -42,7 +42,10 @@ export function DataTableRowActions<TData> ({
                 value={task.label}
                 onValueChange={(value: any) => {
                   const { label, ...rest } = task
-                  updateTask({ id: task.id, task: { label: value as Label, ...rest } })
+                  updateTask({
+                    id: task.id,
+                    task: { label: value as Label, ...rest }
+                  })
                 }}
               >
                 {LabelSchema.options.map((label) => (
@@ -60,7 +63,10 @@ export function DataTableRowActions<TData> ({
                 value={task.priority}
                 onValueChange={(value: any) => {
                   const { priority, ...rest } = task
-                  updateTask({ id: task.id, task: { priority: value as Priority, ...rest } })
+                  updateTask({
+                    id: task.id,
+                    task: { priority: value as Priority, ...rest }
+                  })
                 }}
               >
                 {PrioritySchema.options.map((priority) => (
@@ -78,7 +84,10 @@ export function DataTableRowActions<TData> ({
                 value={task.status}
                 onValueChange={(value: any) => {
                   const { status, ...rest } = task
-                  updateTask({ id: task.id, task: { status: value as Status, ...rest } })
+                  updateTask({
+                    id: task.id,
+                    task: { status: value as Status, ...rest }
+                  })
                 }}
               >
                 {StatusSchema.options.map((status) => (

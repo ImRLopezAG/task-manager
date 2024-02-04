@@ -1,7 +1,7 @@
 import { columns } from '@components/table/columns'
 import { DataTable } from '@components/table/data-table'
 import { UserNav } from '@components/user-nav'
-import { useTaskStore } from '@app/context'
+import { useTaskStore } from '@context/task'
 import { createFileRoute } from '@tanstack/react-router'
 
 function Tasks (): JSX.Element {
