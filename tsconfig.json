@@ -29,7 +29,9 @@
       "@hooks/*": ["./src/app/hooks/*"],
       "@libs/*": ["./src/lib/*"],
       "@type/*": ["./src/types/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@schemas/*": ["./src/schemas/*"],
+      "@context/*": ["./src/app/context/*"],
     }
   },
   "include": [
