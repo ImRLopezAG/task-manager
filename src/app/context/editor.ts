@@ -6,7 +6,8 @@ import { persist } from 'zustand/middleware'
 const editorSchema = z.object({
   theme: ThemeSchema.default('vs-dark'),
   language: LanguageSchema.default('typescript'),
-  src: z.string().default('')
+  src: z.string().default(''),
+  isDiagram: z.boolean().default(false)
 })
 
 interface State {
@@ -17,6 +18,7 @@ interface Actions {
   setCurrentEditorSrc: (src: string) => void
   setTheme: (theme: z.infer<typeof ThemeSchema>) => void
   setLanguage: (language: z.infer<typeof LanguageSchema>) => void
+  toggleDiagram: () => void
 }
 
 export const useEditorsStore = create(
@@ -26,7 +28,8 @@ export const useEditorsStore = create(
         editor: {
           language: 'typescript',
           theme: 'vs-dark',
-          src: ''
+          src: '',
+          isDiagram: false
         }
       }),
       setCurrentEditorSrc (src) {
@@ -50,6 +53,14 @@ export const useEditorsStore = create(
           editor: {
             ...state.editor,
             language
+          }
+        }))
+      },
+      toggleDiagram () {
+        set((state) => ({
+          editor: {
+            ...state.editor,
+            isDiagram: !state.editor.isDiagram
           }
         }))
       }

@@ -13,7 +13,7 @@ import { MarkdownFormat } from '@components/editor/md-format'
 import { useEditorsStore } from '@context/editor'
 
 function Editor (): JSX.Element {
-  const { editor, setLanguage, setTheme } = useEditorsStore()
+  const { editor, setLanguage, setTheme, toggleDiagram } = useEditorsStore()
   return (
     <Tabs defaultValue='complete' className='flex-1'>
       <div className='hidden h-full flex-col md:flex'>
@@ -21,11 +21,15 @@ function Editor (): JSX.Element {
           <h2 className='text-lg font-semibold'>Editor</h2>
           <div className='hidden flex-col space-y-4 sm:flex size-fit '>
             <TabsList className='grid grid-cols-2 h-9 w-28'>
-              <TabsTrigger value='complete'>
+              <TabsTrigger value='complete' onClick={() => {
+                toggleDiagram()
+              }}>
                 <span className='sr-only'>Complete</span>
                 <EditLayoutIcon />
               </TabsTrigger>
-              <TabsTrigger value='split'>
+              <TabsTrigger value='split' onClick={() => {
+                toggleDiagram()
+              }}>
                 <span className='sr-only'>Split</span>
                 <LayoutShitIcon />
               </TabsTrigger>
