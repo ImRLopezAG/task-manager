@@ -10,12 +10,12 @@ import { Route as IndexImport } from './app/routes/index'
 
 const EditorRoute = EditorImport.update({
   path: '/editor',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRoute
 } as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRoute
 } as any)
 
 // Populate the FileRoutesByPath interface
